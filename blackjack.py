@@ -1,8 +1,17 @@
 #!/usr/bin/env python3
 import random
+import os
 
 deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]*4
 random.shuffle(deck)
+result = ""
+score = []
+
+def clear():
+	if os.name == 'nt':
+		os.system('CLS')
+	if os.name == 'posix':
+		os.system('clear')
 
 def deal(deck):
     hand = []
@@ -40,6 +49,7 @@ def hit(hand):
 
 def game():
 	choice = ""
+	global score
 	playerHand=deal(deck)
 	dealerHand=deal(deck)
 	playerScore=scoreHand(playerHand)
@@ -48,18 +58,18 @@ def game():
 	if dealerScore == 21 and playerScore == 21:
 		print("The dealer has: " + str(dealerHand) + " for a total of: " + str(dealerScore))
 		print("You and the dealer both have a BlackJack! It's a Push.")
-		result = "push"
-		return result
+		score.append("push")
+		return
 	elif dealerScore == 21:
 		print("The dealer has: " + str(dealerHand) + " for a total of: " + str(dealerScore))
 		print("The dealer has a BlackJack! You lose.")
-		result = "lose"
-		return result
+		score.append("loss")
+		return
 	elif playerScore == 21:
 		print("The dealer has: " + str(dealerHand) + " for a total of: " + str(dealerScore))
 		print("You have a BlackJack and you Win!")
-		result = "win"
-		return result
+		score.append("win")
+		return
 	else:
 		print("The dealer is showing: " + str(dealerHand[0]))
 		while choice != "s":
@@ -74,8 +84,8 @@ def game():
 				else:
 					print("You have: " + str(playerHand) + " for a total of: " + str(playerScore))
 					print("You have busted!")
-					result = "lose"
-					return result
+					score.append("loss")
+					return
 			if choice == "s":
 				break
 		print("The dealer has: " + str(dealerHand) + " for a total of: " + str(dealerScore))
@@ -96,40 +106,37 @@ def game():
 				break
 		if dealerScore > 21:
 			print("The dealer has busted! You Win!")
-			result = "win"
-			return result
+			score.append("win")
+			return
 		elif dealerScore == playerScore:
 			print("It's a Push!")
-			result = "push"
-			return result
+			score.append("push")
+			return
 		elif dealerScore > playerScore:
 			print("The Dealer Wins!")
-			result = "lose"
-			return result
+			score.append("loss")
+			return
 		elif dealerScore < playerScore:
 			print("You Win!")
-			result = "win"
-			return result
+			score.append("win")
+			return
 
 
+def main():
+	choice = ""
+	global deck
+	global result
+	while choice != "n":
+		clear()
+		if len(deck) < 15:
+			print("Shuffling the cards...")
+			deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]*4
+			random.shuffle(deck)
+		game()
+		score.append(result)
+		print("The results are Win: " + str(score.count("win")) + " Loss: " 
+			+ str(score.count("loss")) + " Push: " 
+			+ str(score.count("push")))
+		choice = input("Would you like to play again? [Y]es or [N]o: ").lower()
 
-
-		
-
-
-game()
-
-#pph = str(playerHand)
-#pdh = str(dealerHand)
-#pps = str(playerScore)
-#pds = str(dealerScore)
-#print("player hand:" + pph + "dealer hand" + pdh)
-#print("player score: " + pps + " dealer hand " + pds)
-
-#playerHand = hit(playerHand)
-#dealerHand = hit(dealerHand)
-#playerScore = scoreHand(playerHand)
-#dealerScore = scoreHand(dealerHand)
-
-#print("player hand:" + str(playerHand) + "dealer hand" + str(dealerHand))
-#print("player score: " + str(playerScore) + " dealer hand " + str(dealerScore))
+main()
