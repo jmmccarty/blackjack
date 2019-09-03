@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import os
 import random
 
 deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]*4
@@ -49,16 +48,17 @@ def game():
 	if dealerScore == 21 and playerScore == 21:
 		print("The dealer has: " + str(dealerHand) + " for a total of: " + str(dealerScore))
 		print("You and the dealer both have a BlackJack! It's a Push.")
-		result = "Push"
+		result = "push"
 		return result
 	elif dealerScore == 21:
 		print("The dealer has: " + str(dealerHand) + " for a total of: " + str(dealerScore))
 		print("The dealer has a BlackJack! You lose.")
-		result = "Lose"
+		result = "lose"
 		return result
 	elif playerScore == 21:
+		print("The dealer has: " + str(dealerHand) + " for a total of: " + str(dealerScore))
 		print("You have a BlackJack and you Win!")
-		result = "Win"
+		result = "win"
 		return result
 	else:
 		print("The dealer is showing: " + str(dealerHand[0]))
@@ -75,23 +75,47 @@ def game():
 					print("You have: " + str(playerHand) + " for a total of: " + str(playerScore))
 					print("You have busted!")
 					result = "lose"
-					break
+					return result
 			if choice == "s":
 				break
-		print("The dealer has: " + str(dealerHand) + " for a total of: " + str(playerScore))
-		
+		print("The dealer has: " + str(dealerHand) + " for a total of: " + str(dealerScore))
+		while dealerScore <= 17:
+			if "A" in dealerHand and dealerScore == 17:
+				print("Dealer must hit on a soft 17")
+				dealerHand = hit(dealerHand)
+				dealerScore = scoreHand(dealerHand)
+				print("The dealer has: " + str(dealerHand) + " for a total of: " + str(dealerScore))
+				continue
+			elif dealerScore < 17:
+				print("The Dealer hits")
+				dealerHand = hit(dealerHand)
+				dealerScore = scoreHand(dealerHand)
+				print("The dealer has: " + str(dealerHand) + " for a total of: " + str(dealerScore))
+				continue
+			else:
+				break
+		if dealerScore > 21:
+			print("The dealer has busted! You Win!")
+			result = "win"
+			return result
+		elif dealerScore == playerScore:
+			print("It's a Push!")
+			result = "push"
+			return result
+		elif dealerScore > playerScore:
+			print("The Dealer Wins!")
+			result = "lose"
+			return result
+		elif dealerScore < playerScore:
+			print("You Win!")
+			result = "win"
+			return result
+
+
+
 
 		
 
-		
-				
-
-
-
-			
-
-
-		 
 
 game()
 
