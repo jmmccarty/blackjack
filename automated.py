@@ -3,6 +3,7 @@
 import random
 import os
 
+## 6 deck shoe
 deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]*24
 random.shuffle(deck)
 result = ""
@@ -49,13 +50,12 @@ def hit(hand):
 	return hand
 
 def game():
-	choice = ""
 	global score
 	playerHand=deal(deck)
 	dealerHand=deal(deck)
 	playerScore=scoreHand(playerHand)
 	dealerScore=scoreHand(dealerHand)
-	print("You have: " + str(playerHand) + " for a total of: " + str(playerScore))
+	print("Player Starting Hand: " + str(playerHand) + " for a total of: " + str(playerScore))
 	if dealerScore == 21 and playerScore == 21:
 		print("The dealer has: " + str(dealerHand) + " for a total of: " + str(dealerScore))
 		print("You and the dealer both have a BlackJack! It's a Push.")
@@ -73,10 +73,8 @@ def game():
 		return
 	else:
 		print("The dealer is showing: " + str(dealerHand[0]))
-		while choice != "s":
-			choice = input("Would you like to [H]it or [S]tand?").lower()
-			print(choice)
-			if choice == "h":
+		if playerScore <= 11:
+			while playerScore <= 11:
 				playerHand = hit(playerHand)
 				playerScore=scoreHand(playerHand)
 				if playerScore <= 21:
@@ -87,8 +85,21 @@ def game():
 					print("You have busted!")
 					score.append("loss")
 					return
-			if choice == "s":
-				break
+		elif dealerScore >= 7:
+			while playerScore <= 16:
+				playerHand = hit(playerHand)
+				playerScore=scoreHand(playerHand)
+				if playerScore <= 21:
+					print("You have: " + str(playerHand) + " for a total of: " + str(playerScore))
+					continue
+				else:
+					print("You have: " + str(playerHand) + " for a total of: " + str(playerScore))
+					print("You have busted!")
+					score.append("loss")
+					return
+		elif dealerHand[0] <= 6:
+			print("Player Stands")
+		
 		print("The dealer has: " + str(dealerHand) + " for a total of: " + str(dealerScore))
 		while dealerScore <= 17:
 			if "A" in dealerHand and dealerScore == 17:
@@ -124,12 +135,16 @@ def game():
 
 
 def main():
-	choice = ""
 	global deck
 	global result
-	while choice != "n":
+	clear()
+	print("This application will automaticly play BlackJack\n"
+	"with the player always staying when\n"
+	"the dealer is showing a 6 or lower.")
+	y = int(input("How many hands would you like the system to play?"))
+	for x in range(y):
 		clear()
-		if len(deck) < 15:
+		if len(deck) < 62: ## Shuffle with 20 percent of shoe left
 			print("Shuffling the cards...")
 			deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]*4
 			random.shuffle(deck)
@@ -138,6 +153,5 @@ def main():
 		print("The results are Win: " + str(score.count("win")) + " Loss: " 
 			+ str(score.count("loss")) + " Push: " 
 			+ str(score.count("push")))
-		choice = input("Would you like to play again? [Y]es or [N]o: ").lower()
 
 main()
